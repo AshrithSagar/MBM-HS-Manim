@@ -80,8 +80,15 @@ class CartesianProduct(Scene):
         seqs = itertools.product(*sequential_mutations)
         for seq in seqs:
             seq = "".join(seq)
-            sequence_text = Text(seq)
-            # .align_to(sequenceList, DOWN)
+            
+            text = Text(seq, font_size=48)
+            text.move_to(seq_box_group.get_center())
+            seq_text_group = VGroup()
+            seq_text_group.add(text)
+
+            self.remove(seq_text_group)
+            sequence_text = Text(seq).align_to(sequenceList, DOWN)
             self.play(Transform(seq_text_group, sequence_text))
+            self.remove(seq_text_group)
             self.wait(0.2)
         self.wait()
