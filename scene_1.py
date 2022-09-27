@@ -67,7 +67,7 @@ class CartesianProduct(Scene):
         sequenceList = Text(sequence)
         sequenceList.to_corner(UP + RIGHT)
 
-        for seq in seqs:
+        for index, seq in enumerate(seqs):
             seq = "".join(seq)
 
             seq_box_group, seq_text_group = sequenceBoxes(seq)
@@ -79,8 +79,12 @@ class CartesianProduct(Scene):
             self.add(*[mut_box_group for mut_box_group in mut_box_groups])
             self.add(*[mut_text_group for mut_text_group in mut_text_groups])
 
-            sequence_text = Text(seq).next_to(sequenceList, DOWN)
+            sequence_text = Text(seq).align_to(sequenceList[-1], DOWN)
+            sequenceList.add(sequence_text)
             self.play(Transform(seq_text_group, sequence_text))
             self.wait()
 
-            self.clear()
+            self.remove(*seq_box_group)
+            self.remove(*seq_text_group)
+            self.remove(box for box in [mut_box_group for mut_box_group in mut_box_groups])
+            self.remove(text for text in [mut_text_group for mut_text_group in mut_text_groups])
