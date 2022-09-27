@@ -65,18 +65,21 @@ class CartesianProduct(Scene):
             self.add(mut_text_group)
 
         sequential_mutations = []
+        position_list = [x[0] for x in mutations]
         for index, character in enumerate(sequence):
-            if index in [x[0] for x in mutations]:
-                sequential_mutations.append(mutation[index])
+            if index in position_list:
+                characters = [x[1] for x in mutations if x[0] == index]
+                sequential_mutations.append(characters)
+            else:
+                sequential_mutations.append(character)
+        print(sequential_mutations)
 
-        seqs = itertools.product(*sequential_mutations)
-        # for mutation in mutations:
-        #     for motion in mutation[1]:
-        for seq in seqs:
-            self.play(seq_text_group.animate.shift(3*DOWN))
+        # seqs = itertools.product(*sequential_mutations)
+        # for seq in seqs:
+        #     self.play(seq_text_group.animate.shift(3*DOWN))
 
-            sequenceList = Tex("SKNKCNE")
-            sequenceList.to_corner(UP + RIGHT)
-            self.play(Transform(seq_text_group, sequenceList))
-            self.wait(0.2)
-        self.wait()
+        #     sequenceList = Tex("SKNKCNE")
+        #     sequenceList.to_corner(UP + RIGHT)
+        #     self.play(Transform(seq_text_group, sequenceList))
+        #     self.wait(0.2)
+        # self.wait()
