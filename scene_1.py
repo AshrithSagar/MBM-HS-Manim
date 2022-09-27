@@ -7,6 +7,7 @@ def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
     for mutation in mutations:
         position = mutation[0]
         string = mutation[1]
+        mutation_length = len(string)
 
         mainGroup = VGroup()
         textGroup = VGroup()
@@ -15,11 +16,11 @@ def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
                 fill_color=GREEN,
                 fill_opacity=0.5,
                 stroke_color=GREEN
-            ).scale(0.5).shift((index-3) * UP)
+            ).scale(0.5).shift((mutation_length-index-1) * DOWN)
             text = Text(character, font_size=36).move_to(box.get_center())
             mainGroup.add(box, text)
             textGroup.add(text)
-        mainGroup.move_to(boxGroup[2*(sequence_length-position-1)].get_center())
+        mainGroup.match_x(boxGroup[2*(sequence_length-position-1)])
         mainGroups.append(mainGroup)
         textGroups.append(textGroup)
 
