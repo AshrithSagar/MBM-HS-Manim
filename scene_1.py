@@ -53,20 +53,6 @@ class CartesianProduct(Scene):
         # [[position, AA_groups], ...]
         mutations = [[2, "NDAQ"], [4, "CEG"]]
 
-        seq_box_group, seq_text_group = sequenceBoxes(sequence)
-        mut_box_groups, mut_text_groups = mutationBoxes(
-            sequence, seq_box_group, seq_text_group, mutations)
-        self.add(seq_box_group)
-        self.add(seq_text_group)
-
-        for mut_box_group in mut_box_groups:
-            self.add(mut_box_group)
-        for mut_text_group in mut_text_groups:
-            self.add(mut_text_group)
-
-        sequenceList = Tex(sequence)
-        sequenceList.to_corner(UP + RIGHT)
-
         sequential_mutations = list(sequence)
         position_list = [x[0] for x in mutations]
         for index, character in enumerate(sequence):
@@ -76,19 +62,32 @@ class CartesianProduct(Scene):
             else:
                 sequential_mutations[index] = character
         print(sequential_mutations)
-
         seqs = itertools.product(*sequential_mutations)
+
+        sequenceList = Text(sequence)
+        sequenceList.to_corner(UP + RIGHT)
+
         for seq in seqs:
             seq = "".join(seq)
-            
-            text = Text(seq, font_size=48)
-            text.move_to(seq_box_group.get_center())
-            seq_text_group = VGroup()
-            seq_text_group.add(text)
 
-            self.remove(seq_text_group)
-            sequence_text = Text(seq).align_to(sequenceList, DOWN)
+            seq_box_group, seq_text_group = sequenceBoxes(seq)
+            mut_box_groups, mut_text_groups = mutationBoxes(
+                seq, seq_box_group, seq_text_group, mutations)
+
+            self.add(seq_box_group)
+            self.add(seq_text_group)
+            for mut_box_group in mut_box_groups:
+                self.add(mut_box_group)
+            for mut_text_group in mut_text_groups:
+                self.add(mut_text_group)
+
+            sequence_text = Text(seq).next_to(sequenceList, DOWN)
             self.play(Transform(seq_text_group, sequence_text))
+            self.wait()
+
+            self.remove(seq_box_group)
             self.remove(seq_text_group)
-            self.wait(0.2)
+            self.remove(*[mut_box_group for mut_box_group in mut_box_groups])
+            self.remove(*[mut_text_group for mut_text_group in mut_text_groups])
+
         self.wait()
