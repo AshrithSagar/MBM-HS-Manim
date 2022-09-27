@@ -76,18 +76,11 @@ class CartesianProduct(Scene):
 
             self.add(seq_box_group)
             self.add(seq_text_group)
-            for mut_box_group in mut_box_groups:
-                self.add(mut_box_group)
-            for mut_text_group in mut_text_groups:
-                self.add(mut_text_group)
+            self.add(*[mut_box_group for mut_box_group in mut_box_groups])
+            self.add(*[mut_text_group for mut_text_group in mut_text_groups])
 
             sequence_text = Text(seq).next_to(sequenceList, DOWN)
             self.play(Transform(seq_text_group, sequence_text))
             self.wait()
 
-            self.remove(seq_box_group)
-            self.remove(seq_text_group)
-            self.remove(*[mut_box_group for mut_box_group in mut_box_groups])
-            self.remove(*[mut_text_group for mut_text_group in mut_text_groups])
-
-        self.wait()
+            self.clear()
