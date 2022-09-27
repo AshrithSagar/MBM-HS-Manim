@@ -1,8 +1,9 @@
 from manim import *
 
 
-def mutationBoxes(boxGroup, seqGroup, mutations):
+def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
     mainGroups, textGroups = [], []
+    sequence_length = len(sequence)
     for mutation in mutations:
         position = mutation[0]
         string = mutation[1]
@@ -15,10 +16,10 @@ def mutationBoxes(boxGroup, seqGroup, mutations):
                 fill_opacity=0.5,
                 stroke_color=GREEN
             ).scale(0.5).shift((index-3) * UP)
-            text = Text(character, font_size=24).move_to(box.get_center())
+            text = Text(character, font_size=36).move_to(box.get_center())
             mainGroup.add(box, text)
             textGroup.add(text)
-        mainGroup.move_to(position*LEFT)
+        mainGroup.move_to(boxGroup[2*(sequence_length-position-1)].get_center())
         mainGroups.append(mainGroup)
         textGroups.append(textGroup)
 
@@ -34,7 +35,7 @@ def sequenceBoxes(sequence):
             fill_opacity=0.5,
             stroke_color=BLUE
         ).scale(0.5).shift((index-3) * LEFT)
-        text = Text(character, font_size=24).move_to(box.get_center())
+        text = Text(character, font_size=36).move_to(box.get_center())
         mainGroup.add(box, text)
         textGroup.add(text)
 
@@ -50,7 +51,7 @@ class CartesianProduct(Scene):
 
         seq_box_group, seq_text_group = sequenceBoxes(sequence)
         mut_box_groups, mut_text_groups = mutationBoxes(
-            seq_box_group, seq_text_group, mutations)
+            sequence, seq_box_group, seq_text_group, mutations)
         self.add(seq_box_group)
 
         # seq_text_group.to_corner(UP)
