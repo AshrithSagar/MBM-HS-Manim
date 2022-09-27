@@ -1,4 +1,5 @@
 from manim import *
+import itertools
 
 
 def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
@@ -63,9 +64,19 @@ class CartesianProduct(Scene):
         for mut_text_group in mut_text_groups:
             self.add(mut_text_group)
 
-        # self.play(seq_text_group.animate.shift(3*DOWN))
+        sequential_mutations = []
+        for index, character in enumerate(sequence):
+            if index in [x[0] for x in mutations]:
+                sequential_mutations.append(mutation[index])
 
-        sequenceList = Tex("SKNKCNE")
-        sequenceList.to_corner(UP + RIGHT)
-        self.play(Transform(seq_text_group, sequenceList))
+        seqs = itertools.product(*sequential_mutations)
+        # for mutation in mutations:
+        #     for motion in mutation[1]:
+        for seq in seqs:
+            self.play(seq_text_group.animate.shift(3*DOWN))
+
+            sequenceList = Tex("SKNKCNE")
+            sequenceList.to_corner(UP + RIGHT)
+            self.play(Transform(seq_text_group, sequenceList))
+            self.wait(0.2)
         self.wait()
