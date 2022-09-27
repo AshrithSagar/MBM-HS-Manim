@@ -1,25 +1,40 @@
 from manim import *
 
 
-class CartesianProduct(Scene):
+def sequenceBoxes(string):
+    dimension = 2
+
+    mainGroup = VGroup()
+    textGroup = VGroup()
+    for index, character in enumerate(string[::-1]):
+        box = Square(
+            fill_color=BLUE,
+            fill_opacity=0.5,
+            stroke_color=BLUE
+        ).scale(0.5).shift((index-3) * LEFT)
+        text = Text(character, font_size=24).move_to(box.get_center())
+        mainGroup.add(box, text)
+        textGroup.add(text)
+
+    return mainGroup, textGroup
+
+
+class CartesianProduct_2(Scene):
     def construct(self):
-        square_1 = Square(color=BLUE, fill_opacity=0.7).shift(5 * LEFT).scale(0.5)
-        square_2 = Square(color=BLUE, fill_opacity=0.7).shift(4 * LEFT).scale(0.5)
-        square_3 = Square(color=BLUE, fill_opacity=0.7).shift(3 * LEFT).scale(0.5)
-        square_4 = Square(color=BLUE, fill_opacity=0.7).shift(2 * LEFT).scale(0.5)
-        square_5 = Square(color=BLUE, fill_opacity=0.7).shift(LEFT).scale(0.5)
-        square_6 = Square(color=BLUE, fill_opacity=0.7).shift(ORIGIN).scale(0.5)
-        square_7 = Square(color=BLUE, fill_opacity=0.7).shift(RIGHT).scale(0.5)
+        sequence = "SKNKCNE"
 
-        square_group = VGroup(square_1, square_2, square_3, square_4, square_5, square_6, square_7)
-        
-        text = Text("S  K  N  K  C  N  E", font_size=48).shift(2 * LEFT)
-        text_group = VGroup(text)
-        
-        self.add(square_group, text_group)
-        self.wait(0.5)
+        # [[position, AA_groups], ...]
+        mutations = [[2, "NBCD"]]
 
-        sequence_1 = Tex("SKNKCNE")
-        sequence_1.to_corner(UP + RIGHT)
-        self.play(Transform(text_group, sequence_1))
+        box_group, seq_group = sequenceBoxes(string=sequence)
+        self.add(box_group)
+
+        # seq_group.to_corner(UP)
+        self.add(seq_group)
+
+        # self.play(seq_group.animate.shift(3*DOWN))
+
+        sequenceList = Tex("SKNKCNE")
+        sequenceList.to_corner(UP + RIGHT)
+        self.play(Transform(seq_group, sequenceList))
         self.wait()
