@@ -51,7 +51,7 @@ class CartesianProduct(Scene):
         sequence = "SKNKCNE"
 
         # [[position, AA_groups], ...]
-        mutations = [[2, "NDAQ"], [4, "CALEG"]]
+        mutations = [[2, "NDAQ"], [4, "CEG"]]
 
         seq_box_group, seq_text_group = sequenceBoxes(sequence)
         mut_box_groups, mut_text_groups = mutationBoxes(
@@ -79,7 +79,8 @@ class CartesianProduct(Scene):
 
         seqs = itertools.product(*sequential_mutations)
         for seq in seqs:
-            sequence_text = Text(str(seq))
+            seq = "".join(seq)
+            sequence_text = Text(seq)
             # .align_to(sequenceList, DOWN)
             self.play(Transform(seq_text_group, sequence_text))
             self.wait(0.2)
