@@ -24,6 +24,7 @@ def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
             mutBoxGroup.add(box)
             mutTextGroup.add(text)
         mutBoxGroup.match_x(CorrespondingBox)
+        mutTextGroup.match_x(CorrespondingBox)
         mainGroups.append(mutBoxGroup)
         textGroups.append(mutTextGroup)
 
@@ -87,5 +88,7 @@ class CartesianProduct(Scene):
             self.wait()
 
             self.remove(*seq_box_group)
-            self.remove(box for box in [mut_box_group for mut_box_group in mut_box_groups])
-            self.remove(text for text in [mut_text_group for mut_text_group in mut_text_groups])
+            box_list = [box for box in [mut_box_group for mut_box_group in mut_box_groups]]
+            text_list = [text for text in [mut_text_group for mut_text_group in mut_text_groups]]
+            self.remove(*box_list)
+            self.remove(*text_list)
