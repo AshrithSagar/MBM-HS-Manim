@@ -66,7 +66,9 @@ class CartesianProduct(Scene):
         seqs = itertools.product(*sequential_mutations)
 
         sequenceList = VGroup()
-        sequenceList.add(Text(sequence))
+        sequence_text = Text(sequence)
+        sequence_text.to_corner(UP + RIGHT)
+        sequenceList.add(sequence_text)
         sequenceList.to_corner(UP + RIGHT)
 
         for index, seq in enumerate(seqs):
@@ -82,7 +84,7 @@ class CartesianProduct(Scene):
             self.add(*[mut_text_group for mut_text_group in mut_text_groups])
 
             sequence_text = Text(seq)
-            sequence_text.next_to(sequenceList[-1], )
+            sequence_text.align_to(sequenceList[-1], UR).shift(0.5 * DOWN)
             sequenceList.add(sequence_text)
             self.play(Transform(seq_text_group, sequence_text))
             self.wait()
