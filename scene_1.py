@@ -9,11 +9,11 @@ def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
     for mutation in mutations:
         position = mutation[0]
         string = mutation[1]
-        CorrespondingBox = boxGroup[2*(sequence_length-position-1)]
+        CorrespondingBox = boxGroup[sequence_length-position-1]
         main_box_y = CorrespondingBox.get_y()
 
-        mainGroup = VGroup()
-        textGroup = VGroup()
+        mutBoxGroup = VGroup()
+        mutTextGroup = VGroup()
         for index, character in enumerate(string):
             box = Square(
                 fill_color=GREEN,
@@ -21,17 +21,17 @@ def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
                 stroke_color=GREEN
             ).scale(0.5).shift((main_box_y-index) * UP)
             text = Text(character, font_size=48).move_to(box.get_center())
-            mainGroup.add(box, text)
-            textGroup.add(text)
-        mainGroup.match_x(CorrespondingBox)
-        mainGroups.append(mainGroup)
-        textGroups.append(textGroup)
+            mutBoxGroup.add(box)
+            mutTextGroup.add(text)
+        mutBoxGroup.match_x(CorrespondingBox)
+        mainGroups.append(mutBoxGroup)
+        textGroups.append(mutTextGroup)
 
     return mainGroups, textGroups
 
 
 def sequenceBoxes(sequence):
-    mainGroup = VGroup()
+    boxGroup = VGroup()
     textGroup = VGroup()
     for index, character in enumerate(sequence[::-1]):
         box = Square(
@@ -40,10 +40,10 @@ def sequenceBoxes(sequence):
             stroke_color=BLUE
         ).scale(0.5).shift((index-3) * LEFT + UP)
         text = Text(character, font_size=48).move_to(box.get_center())
-        mainGroup.add(box, text)
+        boxGroup.add(box)
         textGroup.add(text)
 
-    return mainGroup, textGroup
+    return boxGroup, textGroup
 
 
 class CartesianProduct(Scene):
@@ -64,7 +64,8 @@ class CartesianProduct(Scene):
         print(sequential_mutations)
         seqs = itertools.product(*sequential_mutations)
 
-        sequenceList = Text(sequence)
+        sequenceList = VGroup()
+        sequenceList.add(Text(sequence))
         sequenceList.to_corner(UP + RIGHT)
 
         for index, seq in enumerate(seqs):
@@ -79,12 +80,12 @@ class CartesianProduct(Scene):
             self.add(*[mut_box_group for mut_box_group in mut_box_groups])
             self.add(*[mut_text_group for mut_text_group in mut_text_groups])
 
-            sequence_text = Text(seq).align_to(sequenceList[-1], DOWN)
+            sequence_text = Text(seq)
+            sequence_text.next_to(sequenceList[-1], )
             sequenceList.add(sequence_text)
             self.play(Transform(seq_text_group, sequence_text))
             self.wait()
 
             self.remove(*seq_box_group)
-            self.remove(*seq_text_group)
             self.remove(box for box in [mut_box_group for mut_box_group in mut_box_groups])
             self.remove(text for text in [mut_text_group for mut_text_group in mut_text_groups])
