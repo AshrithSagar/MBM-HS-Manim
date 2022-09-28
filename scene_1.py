@@ -83,7 +83,7 @@ class CartesianProduct(Scene):
             self.add(*[mut_box_group for mut_box_group in mut_box_groups])
             self.add(*[mut_text_group for mut_text_group in mut_text_groups])
 
-            sequence_text = Text(seq)
+            sequence_text = Text(seq, font_size=36)
             sequence_text.align_to(sequenceList[-1], UR).shift(0.5 * DOWN)
             sequenceList.add(sequence_text)
             self.play(Transform(seq_text_group, sequence_text))
