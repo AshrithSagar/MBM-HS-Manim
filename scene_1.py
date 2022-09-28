@@ -3,7 +3,7 @@ import itertools
 
 
 def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
-    mainGroups, textGroups = [], []
+    mutMainGroups, mutBoxGroups, mutTextGroups = [], [], []
     sequence_length = len(sequence)
 
     for mutation in mutations:
@@ -14,6 +14,8 @@ def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
 
         mutBoxGroup = VGroup()
         mutTextGroup = VGroup()
+        mutMainGroup = VGroup()
+
         for index, character in enumerate(string):
             box = Square(
                 fill_color=GREEN,
@@ -21,14 +23,18 @@ def mutationBoxes(sequence, boxGroup, seqGroup, mutations):
                 stroke_color=GREEN
             ).scale(0.5).shift((main_box_y-index) * UP)
             text = Text(character, font_size=48).move_to(box.get_center())
+
             mutBoxGroup.add(box)
             mutTextGroup.add(text)
+            mutMainGroup.add(box, text)
+
         mutBoxGroup.match_x(CorrespondingBox)
         mutTextGroup.match_x(CorrespondingBox)
-        mainGroups.append(mutBoxGroup)
-        textGroups.append(mutTextGroup)
+        mutMainGroups.append(mutMainGroup)
+        mutBoxGroups.append(mutBoxGroup)
+        mutTextGroups.append(mutTextGroup)
 
-    return mainGroups, textGroups
+    return mutMainGroups, mutBoxGroups, mutTextGroups
 
 
 def sequenceBoxes(sequence):
@@ -75,8 +81,8 @@ class CartesianProduct(Scene):
             seq = "".join(seq)
 
             seq_box_group, seq_text_group = sequenceBoxes(seq)
-            mut_box_groups, mut_text_groups = mutationBoxes(
-                seq, seq_box_group, seq_text_group, mutations)
+            mut_main_groups, mut_box_groups, mut_text_groups = mutationBoxes(
+                    seq, seq_box_group, seq_text_group, mutations)
 
             self.add(seq_box_group)
             self.add(seq_text_group)
@@ -89,8 +95,12 @@ class CartesianProduct(Scene):
             self.play(Transform(seq_text_group, sequence_text), run_time=1)
             self.wait(0.5)
 
+            self.play(mut_main_groups[0].animate.shift(UP))
+
             self.remove(*seq_box_group)
-            box_list = [box for box in [mut_box_group for mut_box_group in mut_box_groups]]
-            text_list = [text for text in [mut_text_group for mut_text_group in mut_text_groups]]
+            box_list = [box for box in 
+                [mut_box_group for mut_box_group in mut_box_groups]]
+            text_list = [text for text in 
+                [mut_text_group for mut_text_group in mut_text_groups]]
             self.remove(*box_list)
             self.remove(*text_list)
