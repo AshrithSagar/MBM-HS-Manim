@@ -63,6 +63,17 @@ def sequence_boxes(sequence):
     return box_group, text_group
 
 
+def animate_boxes(self_scene, mut_main_group, index, mutation_length, prev_length = 1):
+    """
+    Animate the mutation box movements.
+    """
+    check = index%(mutation_length*prev_length)
+    if (check == (mutation_length-1)):
+        self_scene.play(mut_main_group.animate.shift(DOWN * (mutation_length-1)))
+    else:
+        self_scene.play(mut_main_group.animate.shift(UP))
+
+
 class CartesianProduct(Scene):
     """
     Main scene.
@@ -97,16 +108,20 @@ class CartesianProduct(Scene):
             seq = "".join(seq)
 
             seq_box_group, seq_text_group = sequence_boxes(seq)
-            mut_main_groups, mut_box_groups, mut_text_groups = mutation_boxes(
-                    seq, seq_box_group, seq_text_group, mutations)
+            if index == 0:
+                mut_main_groups, mut_box_groups, mut_text_groups = mutation_boxes(
+                        seq, seq_box_group, seq_text_group, mutations)
 
+            # Add created objects to scene
             self.add(seq_box_group)
-            # self.add(*mut_box_groups)
-            # self.add(*mut_text_groups)
+            if index == 0:
+                self.add(*mut_main_groups)
+                # self.add(*mut_box_groups)
+                # self.add(*mut_text_groups)
             self.add(seq_text_group)
 
-            new_seq_text_group = seq_text_group.copy()
-            self.add(new_seq_text_group)
+            old_seq_text_group = seq_text_group.copy()
+            self.add(old_seq_text_group)
 
             sequence_text = Text(seq, font_size=36)
             sequence_text.align_to(sequence_list[-1], UR).shift(0.5 * DOWN)
@@ -114,10 +129,15 @@ class CartesianProduct(Scene):
             self.play(Transform(seq_text_group, sequence_text), run_time=1)
             self.wait(0.5)
 
-            # self.play(mut_main_groups[0].animate.shift(UP))
+            # Animate mutation boxes movements
+            animate_boxes(self, mut_main_groups[1], index, 3)
+            # animate_boxes(self, mut_main_groups[0], index, 4, 3)
 
+            # Clear used objects from scene
             self.remove(*seq_box_group)
-            self.remove(*list(mut_box_groups))
-            self.remove(*list(mut_text_groups))
-
-            self.remove(*new_seq_text_group)
+            if index == 0:
+                pass
+                # self.remove(*list(mut_main_groups))
+                # self.remove(*list(mut_box_groups))
+                # self.remove(*list(mut_text_groups))
+            self.remove(*old_seq_text_group)
