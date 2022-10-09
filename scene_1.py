@@ -49,6 +49,7 @@ def sequence_boxes(sequence):
     """
     box_group = VGroup()
     text_group = VGroup()
+
     for index, character in enumerate(sequence[::-1]):
         box = Square(
             fill_color=BLUE,
@@ -73,6 +74,7 @@ class CartesianProduct(Scene):
         # [[position, AA_groups], ...]
         mutations = [[2, "NDAQ"], [4, "CEG"]]
 
+        # Evaluate the Cartesian product
         sequential_mutations = list(sequence)
         position_list = [x[0] for x in mutations]
         for index, character in enumerate(sequence):
@@ -84,12 +86,13 @@ class CartesianProduct(Scene):
         print(sequential_mutations)
         seqs = itertools.product(*sequential_mutations)
 
+        # Sequence list on right side
         sequence_list = VGroup()
         sequence_text = Text(sequence)
-        sequence_text.to_corner(UP + RIGHT)
         sequence_list.add(sequence_text)
         sequence_list.to_corner(UP + RIGHT)
 
+        # Iterate over all sequences in the Cartesian product
         for index, seq in enumerate(seqs):
             seq = "".join(seq)
 
@@ -98,9 +101,12 @@ class CartesianProduct(Scene):
                     seq, seq_box_group, seq_text_group, mutations)
 
             self.add(seq_box_group)
+            # self.add(*mut_box_groups)
+            # self.add(*mut_text_groups)
             self.add(seq_text_group)
-            self.add(*mut_box_groups)
-            self.add(*mut_text_groups)
+
+            new_seq_text_group = seq_text_group.copy()
+            self.add(new_seq_text_group)
 
             sequence_text = Text(seq, font_size=36)
             sequence_text.align_to(sequence_list[-1], UR).shift(0.5 * DOWN)
@@ -108,8 +114,10 @@ class CartesianProduct(Scene):
             self.play(Transform(seq_text_group, sequence_text), run_time=1)
             self.wait(0.5)
 
-            self.play(mut_main_groups[0].animate.shift(UP))
+            # self.play(mut_main_groups[0].animate.shift(UP))
 
             self.remove(*seq_box_group)
             self.remove(*list(mut_box_groups))
             self.remove(*list(mut_text_groups))
+
+            self.remove(*new_seq_text_group)
