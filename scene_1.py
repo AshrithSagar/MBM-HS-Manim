@@ -128,8 +128,8 @@ class CartesianProduct(Scene):
             sequence_text = Text(seq, font_size=36)
             sequence_text.align_to(sequence_list[-1], UR).shift(0.5 * DOWN)
             sequence_list.add(sequence_text)
-            self.play(Transform(seq_text_group, sequence_text), run_time=1)
-            self.wait(0.5)
+            self.play(Transform(seq_text_group, sequence_text), run_time=0.2)
+            self.wait(0.3)
 
             # Animate mutation boxes movements
             animate_boxes(self, mut_main_groups[1], index, 3)
@@ -143,3 +143,5 @@ class CartesianProduct(Scene):
                 # self.remove(*list(mut_box_groups))
                 # self.remove(*list(mut_text_groups))
             self.remove(*old_seq_text_group)
+
+        self.wait(0.5)
