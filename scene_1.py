@@ -63,14 +63,12 @@ def sequence_boxes(sequence):
     return box_group, text_group
 
 
-def animate_boxes(self_scene, mut_main_group, index, mutation_length, prev_length = -1):
+def animate_boxes(self_scene, mut_main_group, index, mutation_length, prev_length = 1):
     """
     Animate the mutation box movements.
     """
-    prev_length = mutation_length if prev_length == -1 else prev_length
-
     prev_check = index%(prev_length)
-    if (prev_check == prev_length-1):
+    if ((prev_length == 1) or (prev_check == (prev_length-1))):
         check = index%(mutation_length)
         if (check == (mutation_length-1)):
             self_scene.play(mut_main_group.animate.shift(DOWN * (mutation_length-1)))
