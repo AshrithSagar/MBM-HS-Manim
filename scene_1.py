@@ -63,15 +63,19 @@ def sequence_boxes(sequence):
     return box_group, text_group
 
 
-def animate_boxes(self_scene, mut_main_group, index, mutation_length, prev_length = 1):
+def animate_boxes(self_scene, mut_main_group, index, mutation_length, prev_length = -1):
     """
     Animate the mutation box movements.
     """
-    check = index%(mutation_length*prev_length)
-    if (check == (mutation_length-1)):
-        self_scene.play(mut_main_group.animate.shift(DOWN * (mutation_length-1)))
-    else:
-        self_scene.play(mut_main_group.animate.shift(UP))
+    prev_length = mutation_length if prev_length == -1 else prev_length
+
+    prev_check = index%(prev_length)
+    if (prev_check == prev_length-1):
+        check = index%(mutation_length)
+        if (check == (mutation_length-1)):
+            self_scene.play(mut_main_group.animate.shift(DOWN * (mutation_length-1)))
+        else:
+            self_scene.play(mut_main_group.animate.shift(UP))
 
 
 class CartesianProduct(Scene):
@@ -131,7 +135,7 @@ class CartesianProduct(Scene):
 
             # Animate mutation boxes movements
             animate_boxes(self, mut_main_groups[1], index, 3)
-            # animate_boxes(self, mut_main_groups[0], index, 4, 3)
+            animate_boxes(self, mut_main_groups[0], index, 4, 3)
 
             # Clear used objects from scene
             self.remove(*seq_box_group)
