@@ -1,7 +1,8 @@
 """
 Cartesian Product animation of Peptide mutater using Manim
 """
-import itertools
+from itertools import product
+from itertools import accumulate
 from manim import *
 
 
@@ -82,7 +83,7 @@ class CartesianProduct(Scene):
     Animation explaining the cartesian product of the peptide mutator.
     """
     def construct(self):
-        sequence = "SKNKCNE"        
+        sequence = "SKNKCNE"
 
         # [[position, AA_groups], ...]
         mutations = [[2, "NDAQ"], [4, "CEG"]]
@@ -97,7 +98,7 @@ class CartesianProduct(Scene):
             else:
                 sequential_mutations[index] = character
         print(sequential_mutations)
-        seqs = itertools.product(*sequential_mutations)
+        seqs = product(*sequential_mutations)
 
         # Sequence list on right side
         sequence_list = VGroup()
@@ -107,6 +108,11 @@ class CartesianProduct(Scene):
 
         # Calculations
         sequence_length = len(sequence)
+        mut_count = len(mutations)
+        mut_lengths = [len(x[1]) for x in mutations]
+        prev_lengths = list(accumulate(mut_lengths[::-1], lambda x, y: x*y))
+        prev_lengths.pop()
+        prev_lengths.insert(0, 1)
 
         # Iterate over all sequences in the Cartesian product
         for index, seq in enumerate(seqs):
@@ -131,24 +137,20 @@ class CartesianProduct(Scene):
             sequence_text = Text(seq, font_size=36)
             sequence_text.align_to(sequence_list[-1], UR).shift(0.5 * DOWN)
             sequence_list.add(sequence_text)
-            self.play(Transform(seq_text_group, sequence_text), run_time=0.2)
-            self.wait(0.3)  
+            self.play(Transform(seq_text_group, sequence_text), run_time=0.3)
+            self.wait(0.3)
 
             # Remove character at mutation positions before animation
             for position in position_list:
                 self.remove(old_seq_text_group[sequence_length-position-1])
 
             # Animate mutation boxes movements
-            animate_boxes(self, mut_main_groups[1], index, 3)
-            animate_boxes(self, mut_main_groups[0], index, 4, 3)
+            for mut_index, mut_group in enumerate(mut_main_groups):
+                pos_index = mut_count-mut_index-1
+                animate_boxes(self, mut_main_groups[pos_index], index, mut_lengths[pos_index], prev_lengths[mut_index])
 
             # Clear used objects from scene
             self.remove(*seq_box_group)
-            if index == 0:
-                pass
-                # self.remove(*list(mut_main_groups))
-                # self.remove(*list(mut_box_groups))
-                # self.remove(*list(mut_text_groups))
             self.remove(*old_seq_text_group)
 
         self.wait(0.5)
