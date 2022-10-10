@@ -82,7 +82,7 @@ class CartesianProduct(Scene):
     Animation explaining the cartesian product of the peptide mutator.
     """
     def construct(self):
-        sequence = "SKNKCNE"
+        sequence = "SKNKCNE"        
 
         # [[position, AA_groups], ...]
         mutations = [[2, "NDAQ"], [4, "CEG"]]
@@ -104,6 +104,9 @@ class CartesianProduct(Scene):
         sequence_text = Text(sequence)
         sequence_list.add(sequence_text)
         sequence_list.to_corner(UP + RIGHT)
+
+        # Calculations
+        sequence_length = len(sequence)
 
         # Iterate over all sequences in the Cartesian product
         for index, seq in enumerate(seqs):
@@ -129,7 +132,11 @@ class CartesianProduct(Scene):
             sequence_text.align_to(sequence_list[-1], UR).shift(0.5 * DOWN)
             sequence_list.add(sequence_text)
             self.play(Transform(seq_text_group, sequence_text), run_time=0.2)
-            self.wait(0.3)
+            self.wait(0.3)  
+
+            # Remove character at mutation positions before animation
+            for position in position_list:
+                self.remove(old_seq_text_group[sequence_length-position-1])
 
             # Animate mutation boxes movements
             animate_boxes(self, mut_main_groups[1], index, 3)
